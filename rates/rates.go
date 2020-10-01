@@ -12,7 +12,7 @@ type ratesResponse struct {
 	License    string
 	Timestamp  uint32 // Valid until 2106
 	Base       string
-	Rates      map[string]float32
+	Rates      map[string]float64
 }
 
 func NewApiClient(apiKey string) *ApiClient {
@@ -25,7 +25,7 @@ type ApiClient struct {
 	ApiKey string
 }
 
-func (c *ApiClient) GetRates() map[string]float32 {
+func (c *ApiClient) GetRates() map[string]float64 {
 	url := "https://openexchangerates.org/api/latest.json?app_id=" + c.ApiKey
 	resp, err := http.Get(url)
 	if err != nil {

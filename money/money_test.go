@@ -5,7 +5,7 @@ import (
 )
 
 func TestConversion(t *testing.T) {
-	rates := make(map[string]float32)
+	rates := make(map[string]float64)
 	rates["USD"] = 1 // This is the 'base'
 	rates["JPY"] = 100
 	convertedValue := ConvertWithRates(rates, "USD", "USD", 43.23)
