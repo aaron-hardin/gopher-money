@@ -1,3 +1,3 @@
-https://github.com/aaron.hardin/gopher-money/workflows/test/badge.svg
+https://github.com/aaron-hardin/gopher-money/workflows/Test/badge.svg
 
 # gopher-money TODO: finish me
