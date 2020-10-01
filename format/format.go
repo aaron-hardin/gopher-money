@@ -7,15 +7,22 @@ import (
 )
 
 func Format(currencyCode string, value float64) string {
-	strFormat := "%v %s"
+	strFormat := getDefaultFormat(value < 0)
 	return FormatAs(currencyCode, value, strFormat)
+}
+
+func getDefaultFormat(isNegative bool) string {
+	if isNegative {
+		return "%s-%v"
+	}
+	return "%s%v"
 }
 
 func FormatAs(currencyCode string, value float64, strFormat string) string {
 	// TODO: handle error cases where curr code does not exist
 	precision := currencyPrecision[currencyCode]
-	strFormat = strings.ReplaceAll(strings.ReplaceAll(strFormat, "%v", "%[3]s"), "%s", "%.[2]*[1]f")
-	roundedValue := roundToPrecision(value, precision)
+	strFormat = strings.ReplaceAll(strings.ReplaceAll(strFormat, "%v", "%.[2]*[1]f"), "%s", "%[3]s")
+	roundedValue := roundToPrecision(math.Abs(value), precision)
 	return fmt.Sprintf(strFormat, roundedValue, precision, currencySymbols[currencyCode])
 }
 

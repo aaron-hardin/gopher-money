@@ -16,4 +16,5 @@ func main() {
 	fmt.Println(rawValue)
 	fmt.Println(format.Round("JPY", rawValue))
 	fmt.Println(format.Format("JPY", rawValue))
+	fmt.Println(format.FormatAs("JPY", -rawValue, "%s(%v)"))
 }
