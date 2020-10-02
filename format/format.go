@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func Format(currencyCode string, value float64) string {
+func Format(currencyCode string, value float64) (string, error) {
 	strFormat := getDefaultFormat(value < 0)
 	return FormatAs(currencyCode, value, strFormat)
 }
@@ -18,18 +18,20 @@ func getDefaultFormat(isNegative bool) string {
 	return "%s%v"
 }
 
-func FormatAs(currencyCode string, value float64, strFormat string) string {
-	// TODO: handle error cases where curr code does not exist
-	precision := currencyPrecision[currencyCode]
-	strFormat = strings.ReplaceAll(strings.ReplaceAll(strFormat, "%v", "%.[2]*[1]f"), "%s", "%[3]s")
-	roundedValue := roundToPrecision(math.Abs(value), precision)
-	return fmt.Sprintf(strFormat, roundedValue, precision, currencySymbols[currencyCode])
+func FormatAs(currencyCode string, value float64, strFormat string) (string, error) {
+	if precision, ok := currencyPrecision[currencyCode]; ok {
+		strFormat = strings.ReplaceAll(strings.ReplaceAll(strFormat, "%v", "%.[2]*[1]f"), "%s", "%[3]s")
+		roundedValue := roundToPrecision(math.Abs(value), precision)
+		return fmt.Sprintf(strFormat, roundedValue, precision, currencySymbols[currencyCode]), nil
+	}
+	return "", fmt.Errorf("format: no precision value found for currency code: %v", currencyCode)
 }
 
-func Round(currencyCode string, value float64) float64 {
-	// TODO: handle error cases where curr code does not exist
-	precision := currencyPrecision[currencyCode]
-	return roundToPrecision(value, precision)
+func Round(currencyCode string, value float64) (float64, error) {
+	if precision, ok := currencyPrecision[currencyCode]; ok {
+		return roundToPrecision(value, precision), nil
+	}
+	return 0, fmt.Errorf("format: no precision value found for currency code: %v", currencyCode)
 }
 
 func roundToPrecision(value float64, precision int8) float64 {

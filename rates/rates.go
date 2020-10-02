@@ -25,26 +25,23 @@ type ApiClient struct {
 	ApiKey string
 }
 
-func (c *ApiClient) GetRates() map[string]float64 {
+func (c *ApiClient) GetRates() (map[string]float64, error) {
 	url := "https://openexchangerates.org/api/latest.json?app_id=" + c.ApiKey
 	resp, err := http.Get(url)
 	if err != nil {
-		// TODO: handle error
-		fmt.Println("error:", err)
+		return nil, fmt.Errorf("rates: error connecting to openexchangerates.org: %w", err)
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		// TODO: handle error
-		fmt.Println("error:", err)
+		return nil, fmt.Errorf("rates: error reading response from openexchangerates.org: %w", err)
 	}
 
 	var parsedResponse ratesResponse
 	err = json.Unmarshal(body, &parsedResponse)
 	if err != nil {
-		// TODO: handle error
-		fmt.Println("error:", err)
+		return nil, fmt.Errorf("rates: error converting response from openexchangerates.org to rates: %w, response: %v", err, string(body))
 	}
 
-	return parsedResponse.Rates
+	return parsedResponse.Rates, nil
 }
