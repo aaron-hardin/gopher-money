@@ -1,82 +1,50 @@
 package format
 
-import (
-	"fmt"
-	"testing"
-)
+import "testing"
 
 func TestFormat(t *testing.T) {
-	actual, err := Format("USD", 44.3)
-	if err != nil {
-		t.Fatal(err)
-	}
-	expected := "$44.30"
-	if actual != expected {
-		t.Fatal(fmt.Sprintf("USD should be formatted as $<value> with 2 decimal places, actual: %s, expected: %s", actual, expected))
-	}
-
-	actual, err = Format("USD", -44.3)
-	if err != nil {
-		t.Fatal(err)
-	}
-	expected = "$-44.30"
-	if actual != expected {
-		t.Fatal(fmt.Sprintf("-USD should be formatted as $-<value> with 2 decimal places, actual: %s, expected: %s", actual, expected))
+	data := []struct {
+		curr string
+		in   float64
+		out  string
+	}{
+		{"USD", 44.3, "$44.30"},
+		{"USD", -44.3, "$-44.30"},
+		{"JPY", 44.3, "¥44"},
+		{"JPY", -44.3, "¥-44"},
 	}
 
-	actual, err = Format("JPY", 44.3)
-	if err != nil {
-		t.Fatal(err)
-	}
-	expected = "¥44"
-	if actual != expected {
-		t.Fatal(fmt.Sprintf("JPY should be formatted as ¥<value> with 0 decimal places, actual: %s, expected: %s", actual, expected))
-	}
-
-	actual, err = Format("JPY", -44.3)
-	if err != nil {
-		t.Fatal(err)
-	}
-	expected = "¥-44"
-	if actual != expected {
-		t.Fatal(fmt.Sprintf("-JPY should be formatted as ¥-<value> with 0 decimal places, actual: %s, expected: %s", actual, expected))
+	for _, exp := range data {
+		res, err := Format(exp.curr, exp.in)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if res != exp.out {
+			t.Fatalf("'%v' didn't match '%v'\n", res, exp.out)
+		}
 	}
 }
 
 func TestFormatAs(t *testing.T) {
-	actual, err := FormatAs("USD", 44.3, "%s %v")
-	if err != nil {
-		t.Fatal(err)
-	}
-	expected := "$ 44.30"
-	if actual != expected {
-		t.Fatal(fmt.Sprintf("USD should be formatted using format given $ and 2 decimal places, actual: %s, expected: %s", actual, expected))
-	}
-
-	actual, err = FormatAs("USD", -44.3, "%s (%v)")
-	if err != nil {
-		t.Fatal(err)
-	}
-	expected = "$ (44.30)"
-	if actual != expected {
-		t.Fatal(fmt.Sprintf("-USD should be formatted using format given $ and 2 decimal places, actual: %s, expected: %s", actual, expected))
+	data := []struct {
+		curr   string
+		in     float64
+		format string
+		out    string
+	}{
+		{"USD", 44.3, "%s %v", "$ 44.30"},
+		{"USD", -44.3, "%s (%v)", "$ (44.30)"},
+		{"JPY", 44.3, "%s %v", "¥ 44"},
+		{"JPY", -44.3, "%s (%v)", "¥ (44)"},
 	}
 
-	actual, err = FormatAs("JPY", 44.3, "%s %v")
-	if err != nil {
-		t.Fatal(err)
-	}
-	expected = "¥ 44"
-	if actual != expected {
-		t.Fatal(fmt.Sprintf("JPY should be formatted using format given ¥ and 0 decimal places, actual: %s, expected: %s", actual, expected))
-	}
-
-	actual, err = FormatAs("JPY", -44.3, "%s (%v)")
-	if err != nil {
-		t.Fatal(err)
-	}
-	expected = "¥ (44)"
-	if actual != expected {
-		t.Fatal(fmt.Sprintf("-JPY should be formatted using format given ¥ and 0 decimal places, actual: %s, expected: %s", actual, expected))
+	for _, exp := range data {
+		res, err := FormatAs(exp.curr, exp.in, exp.format)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if res != exp.out {
+			t.Fatalf("'%v' didn't match '%v'\n", res, exp.out)
+		}
 	}
 }
