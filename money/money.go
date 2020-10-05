@@ -2,6 +2,7 @@ package money
 
 import "fmt"
 
+// Convert uses Rates on Converter to exchange from one currency to another.
 func (c *Converter) Convert(from string, to string, value float64) (float64, error) {
 	return ConvertWithRates(c.Rates, from, to, value)
 }
@@ -31,6 +32,7 @@ func NewConverter(rates map[string]float64) *Converter {
 	return c
 }
 
+// A Converter is used to convert between currencies using known exchange rates
 type Converter struct {
 	Rates map[string]float64
 }

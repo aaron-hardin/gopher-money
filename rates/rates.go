@@ -21,10 +21,12 @@ func NewApiClient(apiKey string) *ApiClient {
 	return c
 }
 
+// An ApiClient is used to interact with the Open Exchange Rates API
 type ApiClient struct {
 	ApiKey string
 }
 
+// GetRates retrieves the latest exchange rates and returns them as a map of Currency Code to rate
 func (c *ApiClient) GetRates() (map[string]float64, error) {
 	url := "https://openexchangerates.org/api/latest.json?app_id=" + c.ApiKey
 	resp, err := http.Get(url)

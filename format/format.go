@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// Format converts currency to a string with correct symbol and precision.
 func Format(currencyCode string, value float64) (string, error) {
 	strFormat := getDefaultFormat(value < 0)
 	return FormatAs(currencyCode, value, strFormat)
@@ -18,6 +19,8 @@ func getDefaultFormat(isNegative bool) string {
 	return "%s%v"
 }
 
+// FormatAs converts currency to a string with correct symbol and precision according to specified format string.
+// %v is used for value, %s is used for currency symbol
 func FormatAs(currencyCode string, value float64, strFormat string) (string, error) {
 	if precision, ok := currencyPrecision[currencyCode]; ok {
 		strFormat = strings.ReplaceAll(strings.ReplaceAll(strFormat, "%v", "%.[2]*[1]f"), "%s", "%[3]s")
@@ -27,6 +30,7 @@ func FormatAs(currencyCode string, value float64, strFormat string) (string, err
 	return "", fmt.Errorf("format: no precision value found for currency code: %v", currencyCode)
 }
 
+// Round returns a float64 with the precision for the currency specified.
 func Round(currencyCode string, value float64) (float64, error) {
 	if precision, ok := currencyPrecision[currencyCode]; ok {
 		return roundToPrecision(value, precision), nil
