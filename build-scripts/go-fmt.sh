@@ -4,12 +4,9 @@
 
 cd $GITHUB_WORKSPACE
 
-GOFMT_OUTPUT="$(gofmt -l . 2>&1)"
-
-if [ -n "$GOFMT_OUTPUT" ]; then
-  echo "All the following files are not correctly formatted"
-  echo "${GOFMT_OUTPUT}"
-
+if [ "$(gofmt -l . | wc -l)" -gt 0 ]; then
+  echo "Issues with formatting:"
+  gofmt -e .
   exit 1
 fi
 
