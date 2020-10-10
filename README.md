@@ -1,4 +1,5 @@
 ![Test](https://github.com/aaron-hardin/gopher-money/workflows/Test/badge.svg)
+[![GoDoc](https://godoc.org/github.com/aaron-hardin/gopher-money?status.svg)](https://godoc.org/github.com/aaron-hardin/gopher-money)
 
 # gopher-money
 Command line utility for all things money
@@ -11,7 +12,7 @@ gopher-money format USD 44.3
 > $44.30
 ```
 
-# gopher-money - rates
+# gopher-money - rates [![GoDoc](https://godoc.org/github.com/aaron-hardin/gopher-money/rates?status.svg)](https://godoc.org/github.com/aaron-hardin/gopher-money/rates)
 Wrapper around Open Exchange Rates to provide a convenient way to get current exchange rates
 ```go
 client := rates.NewApiClient(apiKey)
@@ -20,14 +21,14 @@ client := rates.NewApiClient(apiKey)
 rates, err := client.GetRates()
 ```
 
-# gopher-money - money
+# gopher-money - money [![GoDoc](https://godoc.org/github.com/aaron-hardin/gopher-money/money?status.svg)](https://godoc.org/github.com/aaron-hardin/gopher-money/money)
 Provides functionality for using rates to convert between currencies
 ```go
 converter := money.NewConverter(rates)
 rawValue, err := converter.Convert(fromCurrencyCode, toCurrencyCode, value)
 ```
 
-# gopher-money - format
+# gopher-money - format [![GoDoc](https://godoc.org/github.com/aaron-hardin/gopher-money/format?status.svg)](https://godoc.org/github.com/aaron-hardin/gopher-money/format)
 Provides functionality for formatting currencies, allows converting to correct precision as well as formatting to string with symbol
 
 When providing a custom format string, %v is used for the value and %s is used for the currency symbol
