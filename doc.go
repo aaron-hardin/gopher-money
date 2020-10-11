@@ -9,7 +9,6 @@
 // 	convert     convert from one currency to another
 // 	round       round currency to nearest whole amount
 // 	format      format a currency amount
-// 	help        show information on how to use tool
 //
 // Use "gopher-money <command> --help" for more information about a command.
 //
