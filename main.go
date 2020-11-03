@@ -80,7 +80,7 @@ func (c *ConvertCmd) Run(ctx *Context) error {
 
 	if saveRates {
 		fi, err := os.Create(cacheFile)
-		if err !=nil {
+		if err != nil {
 			return err
 		}
 		defer fi.Close()
@@ -90,7 +90,7 @@ func (c *ConvertCmd) Run(ctx *Context) error {
 
 		encoder := gob.NewEncoder(fz)
 		err = encoder.Encode(exchangeRates)
-		if err !=nil {
+		if err != nil {
 			return err
 		}
 	}
