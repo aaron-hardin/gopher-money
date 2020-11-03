@@ -17,11 +17,13 @@
 //
 // Usage:
 //
-// 	gopher-money convert <from currency code> <to currency code> <value to convert> [--apiKey=<apiKey>]
+// 	gopher-money convert <from currency code> <to currency code> <value to convert> [--apiKey=<apiKey>] [--cache]
 //
 // Convert uses current exchange rates to convert from one currency to another.
 //
 // The apiKey is optional and defaults to the environment variable GOPHER_MONEY_API_KEY
+//
+// If cache is specified then a local file gopher-money-rates-cache.txt will be used for caching exchange rates.
 //
 //
 // Round currency to nearest whole amount

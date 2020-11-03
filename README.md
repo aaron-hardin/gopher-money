@@ -40,5 +40,4 @@ displayValue, err = format.FormatAs(currencyCode, value, customFormat)
 
 # TODO
 * Add documentation for getting cmd util installed
-* Add caching for exchange rates
 * Add more features to rates library to support more features of Open Exchange Rates

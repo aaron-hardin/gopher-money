@@ -1,8 +1,11 @@
 package main
 
 import (
+	"compress/gzip"
+	"encoding/gob"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/aaron-hardin/gopher-money/format"
 	"github.com/aaron-hardin/gopher-money/money"
@@ -19,16 +22,80 @@ type ConvertCmd struct {
 	From   string  `arg name:"from" help:"From currency."`
 	To     string  `arg name:"to" help:"To currency."`
 	Value  float64 `arg name:"value" help:"Value to convert."`
+	Cache  bool    `help:"Uses local cache for exchange rates."`
 }
 
+const cacheFile = "gopher-money-rates-cache.txt"
+
 func (c *ConvertCmd) Run(ctx *Context) error {
-	client := rates.NewApiClient(c.ApiKey)
-	rates, err := client.GetRates()
-	if err != nil {
-		return err
+	var exchangeRates map[string]float64
+	saveRates := c.Cache
+	callApi := true
+	if c.Cache {
+		if _, err := os.Stat(cacheFile); err == nil {
+			// cache file exists
+			fi, err := os.Open(cacheFile)
+			if err != nil {
+				return err
+			}
+			defer fi.Close()
+
+			fz, err := gzip.NewReader(fi)
+			if err != nil {
+				return err
+			}
+			defer fz.Close()
+
+			decoder := gob.NewDecoder(fz)
+
+			// Decoding the serialized data
+			err = decoder.Decode(&exchangeRates)
+			if err != nil {
+				return err
+			}
+
+			// since we loaded from file we don't need to call api
+			callApi = false
+
+			// since we loaded from file we don't need to save to the file
+			saveRates = false
+		} else if os.IsNotExist(err) {
+			callApi = true
+		} else {
+			// could not read the file, but not because it wasn't there
+			return err
+		}
+	} else {
+		callApi = true
 	}
 
-	converter := money.NewConverter(rates)
+	if callApi {
+		client := rates.NewApiClient(c.ApiKey)
+		var err error // Declaring here since we can't use := syntax for exchangeRates
+		exchangeRates, err = client.GetRates()
+		if err != nil {
+			return err
+		}
+	}
+
+	if saveRates {
+		fi, err := os.Create(cacheFile)
+		if err !=nil {
+			return err
+		}
+		defer fi.Close()
+
+		fz := gzip.NewWriter(fi)
+		defer fz.Close()
+
+		encoder := gob.NewEncoder(fz)
+		err = encoder.Encode(exchangeRates)
+		if err !=nil {
+			return err
+		}
+	}
+
+	converter := money.NewConverter(exchangeRates)
 	rawValue, err := converter.Convert(c.From, c.To, c.Value)
 	if err != nil {
 		return err
