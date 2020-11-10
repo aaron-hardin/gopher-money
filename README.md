@@ -12,6 +12,11 @@ gopher-money format USD 44.3
 > $44.30
 ```
 
+Install using the following command
+```
+go get github.com/aaron-hardin/gopher-money
+```
+
 # gopher-money - rates [![GoDoc](https://godoc.org/github.com/aaron-hardin/gopher-money/rates?status.svg)](https://godoc.org/github.com/aaron-hardin/gopher-money/rates)
 Wrapper around Open Exchange Rates to provide a convenient way to get current exchange rates
 ```go
@@ -39,5 +44,4 @@ displayValue, err = format.FormatAs(currencyCode, value, customFormat)
 ```
 
 # TODO
-* Add documentation for getting cmd util installed
 * Add more features to rates library to support more features of Open Exchange Rates
